@@ -1,0 +1,126 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard – ReserCEEYS{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.css"/>
+{% endblock %}
+
+{% block content %}
+<div class="row g-3 mb-3">
+  <!-- Tarjetas de salas -->
+  {% set iconos = ['bi-mic-fill','bi-pc-display','bi-pc-display','bi-people-fill','bi-people-fill'] %}
+  {% for sala in salas %}
+  <div class="col-6 col-md-4 col-lg-2">
+    <div class="card sala-card h-100 text-center p-2" data-sala="{{ sala.id }}" role="button">
+      <i class="bi {{ iconos[loop.index0] }} sala-icon"></i>
+      <div class="sala-nombre">{{ sala.nombre }}</div>
+      <small class="text-muted">{{ sala.piso }}</small>
+    </div>
+  </div>
+  {% endfor %}
+  <div class="col-6 col-md-4 col-lg-2">
+    <div class="card sala-card h-100 text-center p-2 sala-all active-sala" data-sala="" role="button">
+      <i class="bi bi-grid-fill sala-icon"></i>
+      <div class="sala-nombre">Todas las salas</div>
+      <small class="text-muted">&nbsp;</small>
+    </div>
+  </div>
+</div>
+
+<div class="row g-3">
+  <!-- Calendario -->
+  <div class="col-lg-8">
+    <div class="card shadow-sm">
+      <div class="card-header d-flex align-items-center justify-content-between">
+        <span class="fw-semibold"><i class="bi bi-calendar3 me-2"></i>Calendario de Reservas</span>
+        {% if session.get('rol') == 'admin' %}
+        <a href="{{ url_for('nueva_reserva') }}" class="btn btn-sm btn-unp">
+          <i class="bi bi-plus-lg"></i> Nueva
+        </a>
+        {% endif %}
+      </div>
+      <div class="card-body p-2">
+        <div id="calendario"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Panel lateral -->
+  <div class="col-lg-4">
+    <!-- Reservas de hoy -->
+    <div class="card shadow-sm mb-3">
+      <div class="card-header fw-semibold">
+        <i class="bi bi-sun me-1"></i> Reservas de hoy
+        <span class="badge bg-secondary ms-1">{{ reservas_hoy|length }}</span>
+      </div>
+      <div class="card-body p-0">
+        {% if reservas_hoy %}
+        <ul class="list-group list-group-flush">
+          {% for r in reservas_hoy %}
+          <li class="list-group-item py-2">
+            <div class="d-flex justify-content-between align-items-start">
+              <div>
+                <div class="fw-semibold small">{{ r.titulo }}</div>
+                <div class="text-muted small">{{ r.sala_nombre }}</div>
+              </div>
+              <div class="text-end">
+                <span class="badge bg-unp-light text-unp">{{ r.hora_inicio[:5] }}–{{ r.hora_fin[:5] }}</span>
+              </div>
+            </div>
+          </li>
+          {% endfor %}
+        </ul>
+        {% else %}
+        <p class="text-muted small p-3 mb-0">No hay reservas para hoy.</p>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Detalle de evento seleccionado -->
+    <div class="card shadow-sm" id="detalle-card" style="display:none;">
+      <div class="card-header fw-semibold">
+        <i class="bi bi-info-circle me-1"></i> Detalle de reserva
+      </div>
+      <div class="card-body small" id="detalle-body">
+      </div>
+      {% if session.get('rol') == 'admin' %}
+      <div class="card-footer d-flex gap-2">
+        <a id="btn-editar" href="#" class="btn btn-sm btn-outline-primary">
+          <i class="bi bi-pencil"></i> Editar
+        </a>
+        <form id="form-anular" method="POST" action="#">
+          <button type="submit" class="btn btn-sm btn-outline-danger"
+                  onclick="return confirm('¿Anular esta reserva?')">
+            <i class="bi bi-x-circle"></i> Anular
+          </button>
+        </form>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<!-- Modal de evento -->
+<div class="modal fade" id="modalEvento" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header unp-modal-header">
+        <h5 class="modal-title text-white" id="modalTitulo"></h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" id="modalBody"></div>
+      <div class="modal-footer" id="modalFooter"></div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+<script>
+  const ES_ADMIN = {{ (session.get('rol') == 'admin') | tojson }};
+  initCalendario('/api/reservas');
+  initFiltroSalas();
+</script>
+{% endblock %}

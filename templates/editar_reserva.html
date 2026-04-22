@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% block title %}Editar Reserva – ReserCEEYS{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-7 col-lg-6">
+    <div class="card shadow-sm">
+      <div class="card-header fw-semibold">
+        <i class="bi bi-pencil me-2"></i>Editar Reserva #{{ reserva.id }}
+      </div>
+      <div class="card-body">
+        <form method="POST">
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Título / Descripción <span class="text-danger">*</span></label>
+            <input type="text" name="titulo" class="form-control" value="{{ reserva.titulo }}" required maxlength="120"/>
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Sala <span class="text-danger">*</span></label>
+            <select name="sala_id" class="form-select" required>
+              {% for s in salas %}
+              <option value="{{ s.id }}" {% if s.id == reserva.sala_id %}selected{% endif %}>
+                {{ s.nombre }} ({{ s.piso }})
+              </option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Fecha <span class="text-danger">*</span></label>
+            <input type="date" name="fecha" class="form-control" value="{{ reserva.fecha }}" required/>
+          </div>
+          <div class="row g-2 mb-3">
+            <div class="col">
+              <label class="form-label fw-semibold">Hora inicio <span class="text-danger">*</span></label>
+              <input type="time" name="hora_inicio" class="form-control" value="{{ reserva.hora_inicio }}" required/>
+            </div>
+            <div class="col">
+              <label class="form-label fw-semibold">Hora fin <span class="text-danger">*</span></label>
+              <input type="time" name="hora_fin" class="form-control" value="{{ reserva.hora_fin }}" required/>
+            </div>
+          </div>
+          <!-- Sección Solicitante -->
+          <div class="card bg-light border-0 p-3 mb-4">
+            <div class="fw-semibold mb-2 small text-uppercase text-muted">Datos del Solicitante</div>
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Cargo <span class="text-danger">*</span></label>
+              <select name="solicitante_cargo" class="form-select" required>
+                <option value="">— Selecciona el cargo —</option>
+                {% for cargo in ['Rector','Vicerrector','Decano','Docente','Secretario Académico','Administrativo','Alumno'] %}
+                <option value="{{ cargo }}" {% if reserva.solicitante_cargo == cargo %}selected{% endif %}>
+                  {{ cargo }}
+                </option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="mb-0">
+              <label class="form-label fw-semibold">Nombre del solicitante <span class="text-danger">*</span></label>
+              <input type="text" name="solicitante_nombre" class="form-control"
+                     value="{{ reserva.solicitante_nombre }}"
+                     placeholder="Apellidos y nombres completos" required maxlength="150"/>
+            </div>
+          </div>
+          <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-unp">
+              <i class="bi bi-check-lg me-1"></i>Actualizar
+            </button>
+            <a href="{{ url_for('historial') }}" class="btn btn-outline-secondary">Cancelar</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

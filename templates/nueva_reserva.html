@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% block title %}Nueva Reserva – ReserCEEYS{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-7 col-lg-6">
+    <div class="card shadow-sm">
+      <div class="card-header fw-semibold">
+        <i class="bi bi-plus-circle me-2"></i>Nueva Reserva
+      </div>
+      <div class="card-body">
+        <form method="POST">
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Título / Descripción <span class="text-danger">*</span></label>
+            <input type="text" name="titulo" class="form-control" placeholder="Ej.: Clase de Microeconomía" required maxlength="120"/>
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Sala <span class="text-danger">*</span></label>
+            <select name="sala_id" class="form-select" required>
+              <option value="">— Selecciona una sala —</option>
+              {% for s in salas %}
+              <option value="{{ s.id }}">{{ s.nombre }} ({{ s.piso }})</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Fecha <span class="text-danger">*</span></label>
+            <input type="date" name="fecha" class="form-control" required
+                   min="{{ now.strftime('%Y-%m-%d') if now else '' }}"/>
+          </div>
+          <div class="row g-2 mb-3">
+            <div class="col">
+              <label class="form-label fw-semibold">Hora inicio <span class="text-danger">*</span></label>
+              <input type="time" name="hora_inicio" class="form-control" required/>
+            </div>
+            <div class="col">
+              <label class="form-label fw-semibold">Hora fin <span class="text-danger">*</span></label>
+              <input type="time" name="hora_fin" class="form-control" required/>
+            </div>
+          </div>
+          <!-- Sección Solicitante -->
+          <div class="card bg-light border-0 p-3 mb-4">
+            <div class="fw-semibold mb-2 small text-uppercase text-muted">Datos del Solicitante</div>
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Cargo <span class="text-danger">*</span></label>
+              <select name="solicitante_cargo" class="form-select" required>
+                <option value="">— Selecciona el cargo —</option>
+                <option value="Rector">Rector</option>
+                <option value="Vicerrector">Vicerrector</option>
+                <option value="Decano">Decano</option>
+                <option value="Docente">Docente</option>
+                <option value="Secretario Académico">Secretario Académico</option>
+                <option value="Administrativo">Administrativo</option>
+                <option value="Alumno">Alumno</option>
+              </select>
+            </div>
+            <div class="mb-0">
+              <label class="form-label fw-semibold">Nombre del solicitante <span class="text-danger">*</span></label>
+              <input type="text" name="solicitante_nombre" class="form-control"
+                     placeholder="Apellidos y nombres completos" required maxlength="150"/>
+            </div>
+          </div>
+          <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-unp">
+              <i class="bi bi-check-lg me-1"></i>Guardar Reserva
+            </button>
+            <a href="{{ url_for('historial') }}" class="btn btn-outline-secondary">Cancelar</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

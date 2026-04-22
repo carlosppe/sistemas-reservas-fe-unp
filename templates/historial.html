@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+{% block title %}Historial de Reservas – ReserCEEYS{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h5 class="fw-bold mb-0"><i class="bi bi-clock-history me-2"></i>Historial de Reservas</h5>
+  {% if session.get('rol') == 'admin' %}
+  <a href="{{ url_for('nueva_reserva') }}" class="btn btn-sm btn-unp">
+    <i class="bi bi-plus-lg"></i> Nueva Reserva
+  </a>
+  {% endif %}
+</div>
+
+<!-- Filtros -->
+<form method="GET" class="row g-2 mb-3">
+  <div class="col-sm-4">
+    <select name="sala_id" class="form-select form-select-sm">
+      <option value="">Todas las salas</option>
+      {% for s in salas %}
+      <option value="{{ s.id }}" {% if filtro_sala == s.id|string %}selected{% endif %}>{{ s.nombre }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="col-sm-3">
+    <select name="estado" class="form-select form-select-sm">
+      <option value="">Todos los estados</option>
+      <option value="activa" {% if filtro_estado == 'activa' %}selected{% endif %}>Activa</option>
+      <option value="anulada" {% if filtro_estado == 'anulada' %}selected{% endif %}>Anulada</option>
+    </select>
+  </div>
+  <div class="col-sm-2">
+    <button type="submit" class="btn btn-sm btn-outline-primary w-100">
+      <i class="bi bi-funnel"></i> Filtrar
+    </button>
+  </div>
+</form>
+
+<div class="card shadow-sm">
+  <div class="table-responsive">
+    <table class="table table-hover align-middle mb-0">
+      <thead class="table-unp">
+        <tr>
+          <th>#</th>
+          <th>Título</th>
+          <th>Sala</th>
+          <th>Fecha</th>
+          <th>Horario</th>
+          <th>Solicitante</th>
+          <th>Registra</th>
+          <th>Estado</th>
+          {% if session.get('rol') == 'admin' %}<th>Acciones</th>{% endif %}
+        </tr>
+      </thead>
+      <tbody>
+        {% if reservas %}
+          {% for r in reservas %}
+          <tr class="{% if r.estado == 'anulada' %}table-secondary opacity-75{% endif %}">
+            <td class="text-muted small">{{ r.id }}</td>
+            <td class="fw-semibold">{{ r.titulo }}</td>
+            <td>{{ r.sala_nombre }}</td>
+            <td>{{ r.fecha }}</td>
+            <td class="text-nowrap">{{ r.hora_inicio[:5] }} – {{ r.hora_fin[:5] }}</td>
+            <td>
+              {% if r.solicitante_nombre %}
+                <span class="badge bg-unp-light text-unp me-1">{{ r.solicitante_cargo }}</span>
+                {{ r.solicitante_nombre }}
+              {% else %}
+                <span class="text-muted small">—</span>
+              {% endif %}
+            </td>
+            <td>{{ r.usuario_nombre }}</td>
+            <td>
+              {% if r.estado == 'activa' %}
+                <span class="badge bg-success">Activa</span>
+              {% else %}
+                <span class="badge bg-secondary">Anulada</span>
+              {% endif %}
+            </td>
+            {% if session.get('rol') == 'admin' %}
+            <td>
+              {% if r.estado == 'activa' %}
+              <a href="{{ url_for('editar_reserva', reserva_id=r.id) }}"
+                 class="btn btn-xs btn-outline-primary me-1">
+                <i class="bi bi-pencil"></i>
+              </a>
+              <form method="POST" action="{{ url_for('anular_reserva', reserva_id=r.id) }}"
+                    class="d-inline" onsubmit="return confirm('¿Anular reserva?')">
+                <button type="submit" class="btn btn-xs btn-outline-danger">
+                  <i class="bi bi-x-circle"></i>
+                </button>
+              </form>
+              {% endif %}
+            </td>
+            {% endif %}
+          </tr>
+          {% endfor %}
+        {% else %}
+          <tr>
+            <td colspan="8" class="text-center text-muted py-4">No se encontraron reservas.</td>
+          </tr>
+        {% endif %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
