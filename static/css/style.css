@@ -1,0 +1,165 @@
+/* =========================================================
+   ReserCEEYS — Paleta institucional UNP (Azul + Amarillo)
+   ========================================================= */
+
+:root {
+  --unp-blue:       #003087;
+  --unp-blue-dark:  #001f5c;
+  --unp-blue-light: #e8eef7;
+  --unp-yellow:     #FFD100;
+  --unp-yellow-dark:#e6bc00;
+  --unp-text:       #1a1a2e;
+  --radius:         10px;
+}
+
+/* ── Base ─────────────────────────────────────────────── */
+body {
+  background: #f4f6fb;
+  color: var(--unp-text);
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+main { flex: 1; }
+
+/* ── Navbar ───────────────────────────────────────────── */
+.unp-navbar {
+  background: linear-gradient(135deg, var(--unp-blue-dark) 0%, var(--unp-blue) 100%);
+  border-bottom: 3px solid var(--unp-yellow);
+  box-shadow: 0 2px 8px rgba(0,0,30,.25);
+}
+
+.unp-navbar .nav-link { color: rgba(255,255,255,.85) !important; transition: color .2s; }
+.unp-navbar .nav-link:hover,
+.unp-navbar .nav-link.active { color: var(--unp-yellow) !important; }
+
+.logo-placeholder {
+  width: 40px; height: 40px;
+  background: var(--unp-yellow);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 800; font-size: .75rem;
+  color: var(--unp-blue-dark);
+  flex-shrink: 0;
+}
+
+/* ── Botones ──────────────────────────────────────────── */
+.btn-unp {
+  background: var(--unp-blue);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius);
+}
+.btn-unp:hover  { background: var(--unp-blue-dark); color: #fff; }
+.btn-unp:active { background: var(--unp-blue-dark); }
+
+.btn-xs {
+  padding: .2rem .45rem;
+  font-size: .78rem;
+  border-radius: 6px;
+}
+
+/* ── Tarjetas de sala ─────────────────────────────────── */
+.sala-card {
+  border: 2px solid #dee2e6;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: border-color .2s, box-shadow .2s, transform .15s;
+  background: #fff;
+}
+.sala-card:hover  { border-color: var(--unp-blue); box-shadow: 0 4px 12px rgba(0,48,135,.15); transform: translateY(-2px); }
+.sala-card.active-sala { border-color: var(--unp-blue); background: var(--unp-blue-light); }
+
+.sala-icon {
+  font-size: 1.8rem;
+  color: var(--unp-blue);
+  display: block;
+  margin-bottom: .3rem;
+}
+.sala-nombre { font-size: .8rem; font-weight: 600; line-height: 1.2; }
+
+/* ── Tabla ────────────────────────────────────────────── */
+.table-unp th {
+  background: var(--unp-blue);
+  color: #fff;
+  font-weight: 600;
+  font-size: .85rem;
+}
+
+/* ── Badge de sala ────────────────────────────────────── */
+.bg-unp-light { background: var(--unp-blue-light) !important; }
+.text-unp     { color: var(--unp-blue) !important; }
+
+/* ── Modal ────────────────────────────────────────────── */
+.unp-modal-header {
+  background: linear-gradient(135deg, var(--unp-blue-dark), var(--unp-blue));
+  border-bottom: 2px solid var(--unp-yellow);
+}
+
+/* ── FullCalendar override ────────────────────────────── */
+.fc .fc-toolbar-title  { font-size: 1.05rem; font-weight: 700; color: var(--unp-blue); }
+.fc .fc-button-primary { background: var(--unp-blue) !important; border-color: var(--unp-blue) !important; }
+.fc .fc-button-primary:hover { background: var(--unp-blue-dark) !important; }
+.fc .fc-day-today { background: rgba(255,209,0,.12) !important; }
+.fc .fc-event { border-radius: 5px; font-size: .78rem; }
+.fc .fc-col-header-cell { background: var(--unp-blue-light); color: var(--unp-blue); font-weight: 600; }
+
+/* ── Card general ─────────────────────────────────────── */
+.card { border-radius: var(--radius); border: 1px solid #dce3ef; }
+.card-header {
+  background: #fff;
+  border-bottom: 1px solid #dce3ef;
+  padding: .65rem 1rem;
+  font-size: .9rem;
+}
+
+/* ── Footer ───────────────────────────────────────────── */
+.footer {
+  background: var(--unp-blue-dark);
+  color: rgba(255,255,255,.55);
+  font-size: .78rem;
+}
+
+/* ── Login ────────────────────────────────────────────── */
+.login-body {
+  background: linear-gradient(135deg, var(--unp-blue-dark) 0%, var(--unp-blue) 60%, #1a5fc8 100%);
+  min-height: 100vh;
+  display: flex; align-items: center; justify-content: center;
+}
+
+.login-wrapper { width: 100%; max-width: 420px; padding: 1rem; }
+
+.login-card {
+  border-radius: 16px;
+  overflow: hidden;
+  border: none;
+}
+
+.login-header {
+  background: linear-gradient(135deg, var(--unp-blue-dark), var(--unp-blue));
+  border-bottom: 4px solid var(--unp-yellow);
+  color: #fff;
+  text-align: center;
+  padding: 2rem 1rem 1.5rem;
+}
+
+.login-logo {
+  width: 64px; height: 64px;
+  background: var(--unp-yellow);
+  border-radius: 12px;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-weight: 900; font-size: 1.1rem;
+  color: var(--unp-blue-dark);
+  margin-bottom: .5rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,.2);
+}
+
+.login-body-inner { background: #fff; }
+
+/* ── Responsive ───────────────────────────────────────── */
+@media (max-width: 576px) {
+  .sala-icon { font-size: 1.4rem; }
+  .sala-nombre { font-size: .72rem; }
+}
