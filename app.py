@@ -12,6 +12,7 @@ app = Flask(__name__)
 # SECRET_KEY debe estar en las variables de entorno de Render
 app.secret_key = os.environ.get('SECRET_KEY', 'dev-local-secret-cambia-en-produccion')
 
+
 # ---------------------------------------------------------------------------
 # Utilidades de base de datos
 # ---------------------------------------------------------------------------
@@ -127,6 +128,8 @@ def init_db():
 
     conn.commit()
     conn.close()
+
+init_db()
 
 
 # ---------------------------------------------------------------------------
@@ -481,8 +484,7 @@ def admin_eliminar_usuario(uid):
 
 if __name__ == '__main__':
     # init_db() se encarga de crear las tablas en Supabase automáticamente
-    init_db()
-    
+        
     # En producción (Render), port debe ser 10000 o el que asigne el sistema
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)
