@@ -118,13 +118,31 @@ def init_db():
             ('Auditorio',          'Auditorio principal de la facultad',              200, 'Planta baja'),
             ('Sala de Cómputo 01', 'Laboratorio de cómputo con 40 PCs',               40,  'Segundo piso'),
             ('Sala de Cómputo 02', 'Laboratorio de cómputo con 20 PCs',               20,  'Tercer piso'),
-            ('Sala de Reuniones 01','Sala de reuniones para docentes y personal',     20,  'Segundo piso'),
-            ('Sala de Reuniones 02','Sala de reuniones para docentes y personal',     20,  'Tercer piso'),
+            ('Sala de Reuniones 01','Sala de reuniones para docentes y personal',      8,  'Segundo piso'),
+            ('Sala de Reuniones 02','Sala de reuniones para docentes y personal',      8,  'Segundo piso'),
+            ('Sala de Reuniones 03','Sala de reuniones para docentes y personal',     12,  'Tercer piso'),
         ]
         for s in salas:
             conn.execute(
                 "INSERT INTO salas (nombre, descripcion, capacidad, piso) VALUES (%s,%s,%s,%s)", s
             )
+
+    # Migración silenciosa: actualizar capacidades de Salas de Reuniones 01 y 02
+    conn.execute(
+        "UPDATE salas SET capacidad=8, piso='Segundo piso' WHERE nombre='Sala de Reuniones 01'"
+    )
+    conn.execute(
+        "UPDATE salas SET capacidad=8, piso='Segundo piso' WHERE nombre='Sala de Reuniones 02'"
+    )
+    # Insertar Sala de Reuniones 03 si no existe
+    existe_s3 = conn.execute(
+        "SELECT id FROM salas WHERE nombre='Sala de Reuniones 03'"
+    ).fetchone()
+    if not existe_s3:
+        conn.execute(
+            "INSERT INTO salas (nombre, descripcion, capacidad, piso) VALUES (%s,%s,%s,%s)",
+            ('Sala de Reuniones 03', 'Sala de reuniones para docentes y personal', 12, 'Tercer piso')
+        )
 
     conn.commit()
     conn.close()
@@ -202,7 +220,8 @@ def dashboard():
     salas = conn.execute("SELECT * FROM salas").fetchall()
     hoy = datetime.today().date()
     reservas_hoy = conn.execute(
-        '''SELECT r.*, s.nombre AS sala_nombre, u.nombre AS usuario_nombre
+        '''SELECT r.*, s.nombre || ' (Cap: ' || s.capacidad || ')' AS sala_nombre,
+                  u.nombre AS usuario_nombre
            FROM reservas r
            JOIN salas s ON r.sala_id = s.id
            JOIN usuarios u ON r.usuario_id = u.id
@@ -402,7 +421,8 @@ def historial():
     sala_id = request.args.get('sala_id', '')
     estado  = request.args.get('estado', '')
     query   = '''
-        SELECT r.*, s.nombre AS sala_nombre, u.nombre AS usuario_nombre
+        SELECT r.*, s.nombre || ' (Cap: ' || s.capacidad || ')' AS sala_nombre,
+               u.nombre AS usuario_nombre
         FROM reservas r
         JOIN salas s ON r.sala_id = s.id
         JOIN usuarios u ON r.usuario_id = u.id
